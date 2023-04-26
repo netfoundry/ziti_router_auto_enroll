@@ -1,0 +1,11 @@
+requests
+pylint
+pylint-exit
+tqdm
+psutil
+packaging
+pyjwt
+colorama
+jinja2
+distro
+pyyaml
