@@ -1,6 +1,7 @@
 requests
 pylint
 pylint-exit
+pyinstaller
 tqdm
 psutil
 packaging
