@@ -9,6 +9,7 @@ This Python script automates the process of downloading, configuring and enrolli
 ### Running compiled binary
 - Ubuntu 20.04 or higher
 ### Running with python
+- Ubuntu 20.04 or higher
 - Python 3.6 or higher
 - Install requirements: `pip install -r requirements.txt`
 
@@ -123,7 +124,7 @@ This Python script automates the process of downloading, configuring and enrolli
 
 ### Listeners Options
 - `--disableListeners`: Disable Listeners portion of router config
-- `--assumePublic`: Attempt to use external lookup to assign default edge listener instead of {default_gw_adapter}
+- `--assumePublic`: Attempt to use external lookup to assign default edge listener instead of {default_gw_adapter} - This option also auto configures an external linkListener with the external ip
 - `--edgeListeners`: Edge Binding Listener (Default: 'tls:0.0.0.0:443' '{default_gw_adapter}:443')
     - Format: 'ADDRESS' 'ADVERTISE' 'MAXQUEUEDCONNECTS' 'MAXOUTSTANDINGCONNECTS' 'CONNECTTIMEOUTMS' 'LOOKUPAPISESSIONTIMEOUT'
     - Address (required): A protocol:host:port string on which network interface to listen on. 0.0.0.0 will listen on all interfaces
