@@ -26,7 +26,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Use pyinstall to create ziti_router_auto_enroll distribution binary
-      run: pyinstaller -F ziti_router_auto_enroll/ziti_router_auto_enroll.py      
+      run: pyinstaller -F ziti_router_auto_enroll.py      
 
     - name: version
       run: echo "version=$(./dist/ziti_router_auto_enroll -v)" >> $GITHUB_ENV
