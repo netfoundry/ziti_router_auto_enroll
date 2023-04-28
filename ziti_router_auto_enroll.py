@@ -541,8 +541,9 @@ def check_iptables(args):
         if args.printConfig:
             logging.warning("Unable to find iptables. "
                             "This configuration is invalid, tproxy requires iptables")
-        logging.error("Unable to find iptables. Unable to continue enrollment")
-    
+        else:
+            logging.error("Unable to find iptables. Unable to continue enrollment")
+            exit(1)
 
 def check_parameters_file(args, parser):
     """
