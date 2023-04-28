@@ -516,6 +516,34 @@ def check_env_vars(args, parser):
                 logging.warning("Overriding Environmental value"
                                 " for %s, with value set via cli", arg)
 
+def check_iptables(args):
+    """
+    Check if the 'iptables' executable is installed on the system by searching
+    for it in the directories listed in the system's PATH environment variable.
+    If 'iptables' is not found, print an error message and exit the script with
+    an exit code of 1.
+    """
+    logging.debug("Checking for iptables")
+    def is_executable_file(file_path):
+        return os.path.isfile(file_path) and os.access(file_path, os.X_OK)
+
+    iptables_installed = False
+    system_path = os.environ.get('PATH', '').split(os.pathsep)
+
+    for path_dir in system_path:
+        iptables_path = os.path.join(path_dir, 'iptables')
+        if is_executable_file(iptables_path):
+            iptables_installed = True
+            logging.debug("Found iptables: %s", iptables_path)
+            break
+
+    if not iptables_installed:
+        if args.printConfig:
+            logging.warning("Unable to find iptables. "
+                            "This configuration is invalid, tproxy requires iptables")
+        logging.error("Unable to find iptables. Unable to continue enrollment")
+    
+
 def check_parameters_file(args, parser):
     """
     Sets argparse argument values based on values in a YAML or JSON file.
@@ -631,7 +659,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.0'
+    __version__ = '1.0.1'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
@@ -1785,6 +1813,11 @@ def main(args):
 
     # root check
     check_root_permissions()
+
+    # iptables check if tunneler
+    if args.tunnelListener or args.autoTunnelListener:
+        check_iptables(args)
+
 
     # check to make sure it's not already registered
     if args.force:
