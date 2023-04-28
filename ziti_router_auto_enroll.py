@@ -543,7 +543,7 @@ def check_iptables(args):
                             "This configuration is invalid, tproxy requires iptables")
         else:
             logging.error("Unable to find iptables. Unable to continue enrollment")
-            exit(1)
+            sys.exit(1)
 
 def check_parameters_file(args, parser):
     """
