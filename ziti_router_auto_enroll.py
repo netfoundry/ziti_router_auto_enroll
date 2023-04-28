@@ -660,7 +660,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.1'
+    __version__ = '1.0.2'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
@@ -1826,7 +1826,8 @@ def main(args):
             logging.error("Already registered. Override with -f/--force")
             sys.exit(1)
     else:
-        manage_systemd_service('ziti-router.service','stop')
+        if not args.printConfig:
+            manage_systemd_service('ziti-router.service','stop')
 
     # print template
     if args.printTemplate:
