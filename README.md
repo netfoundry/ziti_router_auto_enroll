@@ -52,7 +52,7 @@ This Python script automates the process of downloading, configuring and enrolli
 
 - `--logFile`: Specify the log file (Default: `{cwd}/{program_name}.log`)
 - `--parametersFile`: File containing all parameters Json or Yaml format (.json or .yaml/.yml)
-- `--installDir`: Installation directory for Openziti (Default: `/opt/ziti`)
+- `--installDir`: Installation directory for Openziti (Default: `/opt/openziti/ziti-router`)
 - `--installVersion`: Install a specific version (Default is to match Controller)
 - `--downloadUrl`: Bundle download URL (Default: `https://github.com/openziti/ziti/releases/latest/`)
 
