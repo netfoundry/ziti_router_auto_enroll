@@ -237,8 +237,8 @@ def add_install_arguments(parser):
                                 help='File containing all parameters - json or yaml')
     install_config.add_argument('--installDir', type=str,
                                 help='Installation directory for Openziti - '
-                                     'Default /opt/ziti',
-                                default='/opt/ziti')
+                                     'Default /opt/openziti/ziti-router',
+                                default='/opt/openziti/ziti-router')
     install_config.add_argument('--installVersion', type=str,
                                 help='Install specific version - '
                                      'Default is to match Controller')
@@ -660,7 +660,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.2'
+    __version__ = '1.0.3'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
