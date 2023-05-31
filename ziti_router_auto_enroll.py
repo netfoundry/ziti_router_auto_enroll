@@ -48,10 +48,12 @@ link:
     - binding: {{ listener.binding }}
       bind: {{ listener.bind }}
       advertise: {{ listener.advertise }}
+      {%- if listener.options is defined %}
       options:
         {%- if listener.options.outqueuesize is defined %}
         outQueueSize: {{ listener.options.outqueuesize }}
         {%- endif %}
+      {%- endif %}
     {%- endfor %}
 
 {%- if healthChecks is defined %}
@@ -660,7 +662,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.3'
+    __version__ = '1.0.4'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
@@ -990,11 +992,13 @@ def get_ziti_controller_version(controller_url):
         try:
             response = requests.get(endpoint_url, verify=False, timeout=15)
             response.raise_for_status()
-        except requests.ConnectTimeout:
+        except requests.ConnectTimeout as timeout:
             logging.error("Unable to get controller version: Connection Timed out")
+            logging.error(timeout)
             sys.exit(1)
-        except requests.ConnectionError:
+        except requests.ConnectionError as connection_error:
             logging.error("Unable to get controller version: Connection Error")
+            logging.error(connection_error)
             sys.exit(1)
 
         try:
@@ -1275,12 +1279,14 @@ def set_link_listeners(args):
     """
     link_listeners = []
     if args.linkListeners:
+        logging.debug("Processing link listeners: %s", args.linkListeners)
         for listener in args.linkListeners:
             link_listener_values = {'binding': listener[0],
                                     'bind': listener[1],
                                     'advertise': listener[2]}
-            link_listener_options_value = {'outqueuesize': listener[3]}
-            link_listener_values['options'] = link_listener_options_value
+            if len(listener) > 3:
+                link_listener_options_value = {'outqueuesize': listener[3]}
+                link_listener_values['options'] = link_listener_options_value
             link_listeners.append(link_listener_values)
     elif args.assumePublic:
         public_address = get_public_address()
