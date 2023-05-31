@@ -992,11 +992,13 @@ def get_ziti_controller_version(controller_url):
         try:
             response = requests.get(endpoint_url, verify=False, timeout=15)
             response.raise_for_status()
-        except requests.ConnectTimeout:
+        except requests.ConnectTimeout as timeout:
             logging.error("Unable to get controller version: Connection Timed out")
+            logging.error(timeout)
             sys.exit(1)
-        except requests.ConnectionError:
+        except requests.ConnectionError as connection_error:
             logging.error("Unable to get controller version: Connection Error")
+            logging.error(connection_error)
             sys.exit(1)
 
         try:
