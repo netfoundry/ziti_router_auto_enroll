@@ -8,6 +8,10 @@ All notable changes to this project will be documented in this file. The format 
 
 - Fixed issue with not passing in all options for link listeners.
 
+### Added
+
+- Additional debug statements in controller connection.
+
 ## [1.0.3] - 2023-05-16
 
 ### Changed
