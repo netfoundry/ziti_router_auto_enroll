@@ -662,7 +662,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.4'
+    __version__ = '1.0.5'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
@@ -1854,10 +1854,6 @@ def main(args):
         print(config)
         sys.exit(0)
 
-    # set up local dns for tunnel mode
-    if args.tunnelListener or args.autoTunnelListener:
-        handle_dns(args)
-
     # download extract binaries
     handle_ziti_install(controller_info,
                         args.downloadUrl,
@@ -1870,6 +1866,10 @@ def main(args):
 
     # do enrollment
     enroll_ziti(jwt_string, args.installDir)
+
+    # set up local dns for tunnel mode
+    if args.tunnelListener or args.autoTunnelListener:
+        handle_dns(args)
 
     # start ziti
     manage_systemd_service('ziti-router.service', 'start')
