@@ -177,7 +177,7 @@ Besides passing in every argument with a --argumentName you can also use:
   - A Parameters file
 ### Using Environmental Variables
 
-:heavy_exclamation_mark: When using environment variables make sure to use **SUDO -E** when running the command
+:heavy_exclamation_mark: When using environment variables make sure to use **sudo -E** when running the command
 
 You can pass any argument vi OS Environmental variables.  All argument are in all UPPER case.
 
