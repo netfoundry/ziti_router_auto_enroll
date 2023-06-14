@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file. The format 
 ### Changed
 
 - Moved the function handle_dns to after the install of binaries & enrollment.
+- Moved root check to before setting log file.
 
 ## [1.0.4] - 2023-05-32
 

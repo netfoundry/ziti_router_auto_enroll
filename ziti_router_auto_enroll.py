@@ -492,7 +492,7 @@ def check_root_permissions():
 
     """
     if os.geteuid() >= 1:
-        logging.error("This script must be run with elevated privileges, "
+        print("\033[0;31mERROR:\033[0m This script must be run with elevated privileges, "
                       "please use 'sudo -E' or run as root")
         sys.exit(1)
 
@@ -1801,6 +1801,9 @@ def main(args):
     # get arguments passed
     args = parser.parse_args(args)
 
+    # root check
+    check_root_permissions()
+
     if args.logFile:
         log_file = args.logFile
     else:
@@ -1818,8 +1821,7 @@ def main(args):
     if args.parametersFile:
         check_parameters_file(args, parser)
 
-    # root check
-    check_root_permissions()
+
 
     # iptables check if tunneler
     if args.tunnelListener or args.autoTunnelListener:
