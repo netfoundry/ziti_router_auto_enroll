@@ -174,9 +174,6 @@ After=network.target
 [Service]
 User=root
 WorkingDirectory={{ install_dir }}
-ExecStartPre=-/usr/sbin/iptables -F NF-INTERCEPT -t mangle
-ExecStartPre=-/opt/netfoundry/ebpf/objects/etables -F -r
-ExecStartPre=-/opt/netfoundry/ebpf/scripts/tproxy_splicer_startup.sh
 {% if single_binary -%}
 ExecStart={{ install_dir }}/ziti router run {{ install_dir }}/config.yml
 {%- else -%}
@@ -662,7 +659,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.5'
+    __version__ = '1.0.6'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
