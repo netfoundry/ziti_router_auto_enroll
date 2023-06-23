@@ -174,6 +174,7 @@ After=network.target
 [Service]
 User=root
 WorkingDirectory={{ install_dir }}
+ExecStartPre=-/usr/sbin/iptables -F NF-INTERCEPT -t mangle
 {% if single_binary -%}
 ExecStart={{ install_dir }}/ziti router run {{ install_dir }}/config.yml
 {%- else -%}
@@ -659,7 +660,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.6'
+    __version__ = '1.0.7'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
