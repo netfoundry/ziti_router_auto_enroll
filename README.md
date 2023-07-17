@@ -153,7 +153,7 @@ This Python script automates the process of downloading, configuring and enrolli
     - LanIf (optional): The lan interface to create to create tproxy rules.
       - Example: --tunnelListener 'tproxy' 'udp://127.0.0.1:53' 'eth0'
       - Note: 'tproxy' requires all three options
-    - DnsSvcIpRange (optional): cidr to use when assigning IPs to unresolvable intercept hostnames (default "100.64.0.1/10")
+    - DnsSvcIpRange (optional): cidr to use when assigning IPs to unresolvable intercept hostnames (default "100.64.0.0/10")
 - `--autoTunnelListener`: Automatically add a local tproxy tunneler with the {default_gw_adapter} as the local resolver and LANIf
 
 ### Web Options
