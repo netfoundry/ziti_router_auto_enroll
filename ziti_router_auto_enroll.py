@@ -680,7 +680,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.8'
+    __version__ = '1.0.9'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
