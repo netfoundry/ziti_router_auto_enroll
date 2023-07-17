@@ -316,13 +316,13 @@ def add_router_health_checks_arguments(parser):
                                             help='How long to wait before pinging the controller - '
                                                  'Default 15')
     router_health_checks_group.add_argument('--linkCheckMinLinks', type=int, default=1,
-                                            help='How long to wait before pinging the controller - '
+                                            help='Number of links required for the health check to be passing. '
                                                  'Default 1')
     router_health_checks_group.add_argument('--linkCheckInterval', type=int, default=10,
-                                            help='How long to wait before pinging the controller - '
+                                            help='How often to check the link count'
                                                  'Default 10')
     router_health_checks_group.add_argument('--linkCheckInitialDelay', type=int, default=5,
-                                            help='How long to wait before pinging the controller - '
+                                            help='How long to wait before running the first check'
                                                  'Default 5')
 
 def add_router_metrics_arguments(parser):
