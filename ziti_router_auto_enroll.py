@@ -660,7 +660,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.7'
+    __version__ = '1.0.8'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
@@ -1151,7 +1151,7 @@ def install_ziti_binaries(file_to_extract, install_dir):
         logging.debug("Attempting to open tar file %s", file_to_extract)
         with tarfile.open(file_to_extract) as downloaded_file:
             for member in downloaded_file.getmembers():
-                if member.name in ['ziti/ziti','ziti/ziti-router']:
+                if member.name in ['ziti','ziti/ziti','ziti/ziti-router']:
                     file_name = os.path.basename(member.name)
                     logging.debug("Found member: %s", file_name)
                     destination_path = os.path.join(install_dir, file_name)
@@ -1160,7 +1160,7 @@ def install_ziti_binaries(file_to_extract, install_dir):
                     with open(destination_path, "wb") as file_out:
                         extracted_file = downloaded_file.extractfile(member)
                         file_out.write(extracted_file.read())
-                    os.chmod(destination_path, member.mode)
+                    os.chmod(destination_path, 0o755)
         logging.debug("Sucessfully extracted file")
         os.remove(file_to_extract)
         logging.debug("Removed file %s", file_to_extract)
