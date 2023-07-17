@@ -316,7 +316,8 @@ def add_router_health_checks_arguments(parser):
                                             help='How long to wait before pinging the controller - '
                                                  'Default 15')
     router_health_checks_group.add_argument('--linkCheckMinLinks', type=int, default=1,
-                                            help='Number of links required for the health check to be passing. '
+                                            help='Number of links required for the'
+                                                 'health check to be passing.'
                                                  'Default 1')
     router_health_checks_group.add_argument('--linkCheckInterval', type=int, default=10,
                                             help='How often to check the link count'
@@ -460,7 +461,7 @@ def add_router_listener_arguments(parser):
                                             'Default None')
     router_listener_group.add_argument('--tunnelListener',
                                        nargs='+',
-                                       metavar=('MODE','RESOLVER','LANIF','DNSSVCIPRANGE'),
+                                       metavar=('MODE RESOLVER LANIF DNSSVCIPRANGE'),
                                        help='Tunnel Binding Listener - '
                                             'Default None')
     router_listener_group.add_argument('--autoTunnelListener',
