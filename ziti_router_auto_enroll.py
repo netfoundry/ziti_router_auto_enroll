@@ -58,10 +58,18 @@ link:
 
 {%- if healthChecks is defined %}
 healthChecks:
+  {%- if healthChecks.ctrlPingCheck is defined %}
   ctrlPingCheck:
     interval: {{ healthChecks.ctrlPingCheck.interval }}
     timeout: {{ healthChecks.ctrlPingCheck.timeout }}
     initialDelay: {{ healthChecks.ctrlPingCheck.initialDelay }}
+  {%- endif %}
+  {%- if healthChecks.linkCheck is defined %}
+  linkCheck:
+    minLinks: {{ healthChecks.linkCheck.minLinks }}
+    interval: {{ healthChecks.linkCheck.interval }}
+    initialDelay: {{ healthChecks.linkCheck.initialDelay }}
+  {%- endif %}
 {%- endif %}
 
 {%- if metrics is defined %}
@@ -307,6 +315,15 @@ def add_router_health_checks_arguments(parser):
     router_health_checks_group.add_argument('--ctrlPingCheckInitialDelay', type=int, default=15,
                                             help='How long to wait before pinging the controller - '
                                                  'Default 15')
+    router_health_checks_group.add_argument('--linkCheckMinLinks', type=int, default=1,
+                                            help='How long to wait before pinging the controller - '
+                                                 'Default 1')
+    router_health_checks_group.add_argument('--linkCheckInterval', type=int, default=10,
+                                            help='How long to wait before pinging the controller - '
+                                                 'Default 10')
+    router_health_checks_group.add_argument('--linkCheckInitialDelay', type=int, default=5,
+                                            help='How long to wait before pinging the controller - '
+                                                 'Default 5')
 
 def add_router_metrics_arguments(parser):
     """
@@ -1319,6 +1336,11 @@ def set_health_checks(args):
             'interval': f"{args.ctrlPingCheckInterval}s",
             'timeout': f"{args.ctrlPingCheckTimeout}s",
             'initialDelay': f"{args.ctrlPingCheckInitialDelay}s"
+        },
+        'linkCheck': {
+            'minLinks': f"{args.linkCheckMinLinks}",
+            'interval': f"{args.linkCheckInterval}s",
+            'initialDelay': f"{args.linkCheckInitialDelay}s"
         }
     }
 
