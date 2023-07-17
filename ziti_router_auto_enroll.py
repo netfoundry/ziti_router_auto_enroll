@@ -150,7 +150,10 @@ listeners:
       {%- endif %}
       {%- if listener.options.lanIf is defined %}
       lanIf: {{ listener.options.lanIf }}
-      {%- endif %}  
+      {%- endif %}
+      {%- if listener.options.dnsSvcIpRange is defined %}
+      dnsSvcIpRange: {{ listener.options.dnsSvcIpRange }}
+      {%- endif %}
     {%- endif %}                  
 {%- endfor %}
 
@@ -1748,6 +1751,7 @@ def process_tunnel_listener_options(listener, auto_configure=False):
         listener_options['mode'] = 'tproxy'
         listener_options['resolver'] = f"udp://{get_private_address()}:53"
         listener_options['lanIf'] = get_default_interface()
+        listener_options['dnsSvcIpRange'] = '100.64.0.0/10'
     else:
         if len(listener) > 0:
             listener_options['mode'] = listener[0]
@@ -1755,6 +1759,8 @@ def process_tunnel_listener_options(listener, auto_configure=False):
             listener_options['resolver'] = listener[1]
         if len(listener) > 2:
             listener_options['lanIf'] = listener[2]
+        if len(listener) > 3:
+            listener_options['dnsSvcIpRange'] = listener[3]
     return listener_values, listener_options
 
 def create_template(args, controller_info):
