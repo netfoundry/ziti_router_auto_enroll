@@ -319,9 +319,9 @@ def add_router_health_checks_arguments(parser):
                                             help='Number of links required for the'
                                                  'health check to be passing.'
                                                  'Default 1')
-    router_health_checks_group.add_argument('--linkCheckInterval', type=int, default=10,
+    router_health_checks_group.add_argument('--linkCheckInterval', type=int, default=5,
                                             help='How often to check the link count'
-                                                 'Default 10')
+                                                 'Default 5')
     router_health_checks_group.add_argument('--linkCheckInitialDelay', type=int, default=5,
                                             help='How long to wait before running the first check'
                                                  'Default 5')

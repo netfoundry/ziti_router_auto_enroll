@@ -78,7 +78,7 @@ This Python script automates the process of downloading, configuring and enrolli
 - `--ctrlPingCheckTimeout`: Timeout the ping (Default: 15)
 - `--ctrlPingCheckInitialDelay`: How long to wait before pinging the controller (Default: 15)
 - `--linkCheckMinLinks`: Number of links required for the health check to be passing. (Defaults to 1)
-- `--linkCheckInterval`: How often to check the link count. (Defaults to 10)
+- `--linkCheckInterval`: How often to check the link count. (Defaults to 5)
 - `--linkCheckInitialDelay`: How long to wait before running the first check. (Defaults to 5)
 
 ### Metrics Options
