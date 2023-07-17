@@ -442,7 +442,7 @@ def add_router_listener_arguments(parser):
                                        help='Proxy Binding Listener - '
                                             'Default None')
     router_listener_group.add_argument('--tunnelListener',
-                                       nargs=4,
+                                       nargs='+',
                                        metavar=('MODE','RESOLVER','LANIF','DNSSVCIPRANGE'),
                                        help='Tunnel Binding Listener - '
                                             'Default None')
