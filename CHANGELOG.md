@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file. The format 
 ### Changed
 
 - Add dnsSvcIpRange to tunnelListener proxy config
+- Add linkCheck healthcheck to default config
 
 ## [1.0.8] - 2023-07-17
 
