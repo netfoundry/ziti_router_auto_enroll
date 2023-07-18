@@ -77,6 +77,9 @@ This Python script automates the process of downloading, configuring and enrolli
 - `--ctrlPingCheckInterval`: How often to ping the controller (Default: 30)
 - `--ctrlPingCheckTimeout`: Timeout the ping (Default: 15)
 - `--ctrlPingCheckInitialDelay`: How long to wait before pinging the controller (Default: 15)
+- `--linkCheckMinLinks`: Number of links required for the health check to be passing. (Defaults to 1)
+- `--linkCheckInterval`: How often to check the link count. (Defaults to 5)
+- `--linkCheckInitialDelay`: How long to wait before running the first check. (Defaults to 5)
 
 ### Metrics Options
 
@@ -150,6 +153,7 @@ This Python script automates the process of downloading, configuring and enrolli
     - LanIf (optional): The lan interface to create to create tproxy rules.
       - Example: --tunnelListener 'tproxy' 'udp://127.0.0.1:53' 'eth0'
       - Note: 'tproxy' requires all three options
+    - DnsSvcIpRange (optional): cidr to use when assigning IPs to unresolvable intercept hostnames (default "100.64.0.0/10")
 - `--autoTunnelListener`: Automatically add a local tproxy tunneler with the {default_gw_adapter} as the local resolver and LANIf
 
 ### Web Options

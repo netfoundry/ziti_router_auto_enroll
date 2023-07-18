@@ -58,10 +58,18 @@ link:
 
 {%- if healthChecks is defined %}
 healthChecks:
+  {%- if healthChecks.ctrlPingCheck is defined %}
   ctrlPingCheck:
     interval: {{ healthChecks.ctrlPingCheck.interval }}
     timeout: {{ healthChecks.ctrlPingCheck.timeout }}
     initialDelay: {{ healthChecks.ctrlPingCheck.initialDelay }}
+  {%- endif %}
+  {%- if healthChecks.linkCheck is defined %}
+  linkCheck:
+    minLinks: {{ healthChecks.linkCheck.minLinks }}
+    interval: {{ healthChecks.linkCheck.interval }}
+    initialDelay: {{ healthChecks.linkCheck.initialDelay }}
+  {%- endif %}
 {%- endif %}
 
 {%- if metrics is defined %}
@@ -150,7 +158,10 @@ listeners:
       {%- endif %}
       {%- if listener.options.lanIf is defined %}
       lanIf: {{ listener.options.lanIf }}
-      {%- endif %}  
+      {%- endif %}
+      {%- if listener.options.dnsSvcIpRange is defined %}
+      dnsSvcIpRange: {{ listener.options.dnsSvcIpRange }}
+      {%- endif %}
     {%- endif %}                  
 {%- endfor %}
 
@@ -304,6 +315,16 @@ def add_router_health_checks_arguments(parser):
     router_health_checks_group.add_argument('--ctrlPingCheckInitialDelay', type=int, default=15,
                                             help='How long to wait before pinging the controller - '
                                                  'Default 15')
+    router_health_checks_group.add_argument('--linkCheckMinLinks', type=int, default=1,
+                                            help='Number of links required for the'
+                                                 'health check to be passing.'
+                                                 'Default 1')
+    router_health_checks_group.add_argument('--linkCheckInterval', type=int, default=5,
+                                            help='How often to check the link count'
+                                                 'Default 5')
+    router_health_checks_group.add_argument('--linkCheckInitialDelay', type=int, default=5,
+                                            help='How long to wait before running the first check'
+                                                 'Default 5')
 
 def add_router_metrics_arguments(parser):
     """
@@ -439,8 +460,8 @@ def add_router_listener_arguments(parser):
                                        help='Proxy Binding Listener - '
                                             'Default None')
     router_listener_group.add_argument('--tunnelListener',
-                                       nargs=3,
-                                       metavar=('MODE','RESOLVER','LANIF'),
+                                       nargs='+',
+                                       metavar=('MODE RESOLVER LANIF DNSSVCIPRANGE'),
                                        help='Tunnel Binding Listener - '
                                             'Default None')
     router_listener_group.add_argument('--autoTunnelListener',
@@ -660,7 +681,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.8'
+    __version__ = '1.0.9'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
@@ -1316,6 +1337,11 @@ def set_health_checks(args):
             'interval': f"{args.ctrlPingCheckInterval}s",
             'timeout': f"{args.ctrlPingCheckTimeout}s",
             'initialDelay': f"{args.ctrlPingCheckInitialDelay}s"
+        },
+        'linkCheck': {
+            'minLinks': f"{args.linkCheckMinLinks}",
+            'interval': f"{args.linkCheckInterval}s",
+            'initialDelay': f"{args.linkCheckInitialDelay}s"
         }
     }
 
@@ -1748,6 +1774,7 @@ def process_tunnel_listener_options(listener, auto_configure=False):
         listener_options['mode'] = 'tproxy'
         listener_options['resolver'] = f"udp://{get_private_address()}:53"
         listener_options['lanIf'] = get_default_interface()
+        listener_options['dnsSvcIpRange'] = '100.64.0.0/10'
     else:
         if len(listener) > 0:
             listener_options['mode'] = listener[0]
@@ -1755,6 +1782,8 @@ def process_tunnel_listener_options(listener, auto_configure=False):
             listener_options['resolver'] = listener[1]
         if len(listener) > 2:
             listener_options['lanIf'] = listener[2]
+        if len(listener) > 3:
+            listener_options['dnsSvcIpRange'] = listener[3]
     return listener_values, listener_options
 
 def create_template(args, controller_info):
