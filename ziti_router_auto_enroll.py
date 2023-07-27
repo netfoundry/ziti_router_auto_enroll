@@ -681,7 +681,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.9'
+    __version__ = '1.0.10'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
@@ -1706,6 +1706,17 @@ def process_listeners_sans(args):
         default_hostname = get_hostname_from_ip(default_ip_address, args)
         if default_hostname is not None:
             csr_sans_dns.append(default_hostname)
+
+    if args.linkListeners:
+        for listener in args.linkListeners:
+            advertise_value = (listener[2]).split(":")[1]
+            if is_valid_ip(advertise_value):
+                csr_sans_ip.append(advertise_value)
+                hostname = get_hostname_from_ip(advertise_value, args)
+                if hostname is not None:
+                    csr_sans_dns.append(hostname)
+            else:
+                csr_sans_dns.append(advertise_value)
 
     csr_sans_ip.append('127.0.0.1')
     csr_sans_dns.append('localhost')
