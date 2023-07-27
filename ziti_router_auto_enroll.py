@@ -1707,7 +1707,7 @@ def process_listeners_sans(args):
         if default_hostname is not None:
             csr_sans_dns.append(default_hostname)
 
-    if args.linkListener:
+    if args.linkListeners:
         for listener in args.linkListeners:
             advertise_value = (listener[2]).split(":")[1]
             if is_valid_ip(advertise_value):
