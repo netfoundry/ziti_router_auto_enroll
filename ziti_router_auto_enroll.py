@@ -681,7 +681,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.10'
+    __version__ = '1.0.11'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
@@ -823,16 +823,19 @@ def get_default_interface():
     :return:str: The name of the network interface associated with the default gateway.
     :return:None: Returns None if no default gateway or associated interface is found.
     """
-    try:
-        route_output = subprocess.check_output(["ip",
-                                                "route",
-                                                "show",
-                                                "default"]).decode("utf-8").strip()
-        default_gateway_interface = route_output.split(" ")[4]
-    except (subprocess.CalledProcessError, IndexError):
-        return None
+    for _ in range(5):
+        try:
+            route_output = subprocess.check_output(["ip",
+                                                    "route",
+                                                    "show",
+                                                    "default"]).decode("utf-8").strip()
+            default_gateway_interface = route_output.split(" ")[4]
+            return default_gateway_interface
+        except (subprocess.CalledProcessError, IndexError):
+            # If an exception occurred, wait 1 second before trying again
+            time.sleep(1)
 
-    return default_gateway_interface
+    return None
 
 def get_hostname_from_ip(ip_address, args):
     """
@@ -966,7 +969,8 @@ def get_private_address():
     default_interface = get_default_interface()
 
     if default_interface is None:
-        return None
+        logging.error("Unable to determinte interface")
+        sys.exit(1)
 
     for info in psutil.net_if_addrs()[default_interface]:
         if info.family == socket.AF_INET:
