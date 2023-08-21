@@ -681,7 +681,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.11'
+    __version__ = '1.0.12'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
@@ -1052,15 +1052,20 @@ def handle_dns(args):
 
     if os_name == 'ubuntu':
         logging.info("Starting Ubuntu DNS setup")
-        handle_ubuntu_dns(args)
-    # TODO: Add other dns handlers for centos redhat debian
+        if distro.version in ['20.04','22.04']:
+            handle_resolved_dns(args)
+    if os_name == 'debian':
+        logging.info("Starting Debian DNS setup")
+        if distro.version() in ['12']:
+            handle_resolved_dns(args)
+    # TODO: Add other dns handlers for centos redhat
     else:
         logging.info("Unable to handle DNS setup on this distro, "
                      "please ensure the local host is the first resolver")
 
-def handle_ubuntu_dns(args):
+def handle_resolved_dns(args):
     """
-    Configure Ubuntu DNS settings for Ziti by creating a resolved configuration file
+    Configure Resolved DNS settings for Ziti by creating a resolved configuration file
     and restarting the necessary network services.
 
     :param args: A Namespace object containing the parsed command-line arguments,
