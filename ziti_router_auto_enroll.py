@@ -1053,7 +1053,9 @@ def handle_dns(args):
 
     if os_name == 'ubuntu':
         logging.info("Starting Ubuntu DNS setup")
-        if distro.version in ['20.04','22.04']:
+        os_version = distro.version()
+        logging.debug("OS Version: %s", os_version)
+        if os_version in ['20.04','22.04']:
             handle_resolved_dns(args)
     if os_name == 'debian':
         logging.info("Starting Debian DNS setup")
