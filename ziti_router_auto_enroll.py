@@ -1049,6 +1049,7 @@ def handle_dns(args):
                  which will be passed to the appropriate OS-specific function.
     """
     os_name = distro.id()
+    logging.debug("OS Distro: %s", os_name)
 
     if os_name == 'ubuntu':
         logging.info("Starting Ubuntu DNS setup")
