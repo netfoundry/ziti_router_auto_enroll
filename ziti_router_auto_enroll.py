@@ -681,7 +681,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.12'
+    __version__ = '1.0.13'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
@@ -1049,14 +1049,17 @@ def handle_dns(args):
                  which will be passed to the appropriate OS-specific function.
     """
     os_name = distro.id()
+    logging.debug("OS Distro: %s", os_name)
+    os_version = distro.version()
+    logging.debug("OS Version: %s", os_version)
 
     if os_name == 'ubuntu':
         logging.info("Starting Ubuntu DNS setup")
-        if distro.version in ['20.04','22.04']:
+        if os_version in ['20.04','22.04']:
             handle_resolved_dns(args)
-    if os_name == 'debian':
+    elif os_name == 'debian':
         logging.info("Starting Debian DNS setup")
-        if distro.version() in ['12']:
+        if os_version in ['12']:
             handle_resolved_dns(args)
     # TODO: Add other dns handlers for centos redhat
     else:
