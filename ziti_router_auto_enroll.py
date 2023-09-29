@@ -802,6 +802,7 @@ def enroll_ziti(jwt_string, install_dir):
     This function should be updated once Ziti has fix the exit codes.
     """
     logging.info("Starting Router Enrollment")
+    current_env = os.environ.copy()
     # write jwt file
     logging.debug("Attempting to write jwt file to disk")
 
@@ -827,7 +828,8 @@ def enroll_ziti(jwt_string, install_dir):
         subprocess.run(registration_command,
                        capture_output=True,
                        text=True,
-                       check=True)
+                       check=True,
+                       env=current_env)
     except subprocess.CalledProcessError as error:
         if "registration complete" in error.stderr:
             logging.info("Successfully enrolled Ziti")
