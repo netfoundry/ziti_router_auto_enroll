@@ -33,6 +33,11 @@ identity:
   ca: {{ identity.ca }}
 ctrl:
   endpoint: {{ ctrl.endpoint }}
+{%- if proxy %}
+proxy:
+  type: {{ proxy.proxy_type }}
+  address: {{ proxy.address }}:{{ proxy.port}}
+{%- endif %}                         
 link:
   dialers:
   {%- for dialer in link_dialers %}
@@ -294,6 +299,25 @@ def add_router_ctrl_arguments(parser):
                                      help='Controller Management Port'
                                           'Default 443',
                                      default=443)
+
+def add_router_proxy_arguments(parser):
+    """
+    Add proxy options arguments to the parser.
+
+    :param parser: The argparse.ArgumentParser instance to add the arguments to.
+    """
+    router_proxy_config_group = parser.add_argument_group('Proxy Options')
+    router_proxy_config_group.add_argument('--proxyType',type=str,
+                                           help='Proxy type '
+                                                'Default http',
+                                           default="http")
+    router_proxy_config_group.add_argument('--proxyAddress',type=str,
+                                           help='Proxy Address '
+                                                'Default None')
+    router_proxy_config_group.add_argument('--proxyPort',type=int,
+                                           help='Proxy Port'
+                                                'Default 3128 ',
+                                            default=3128)
 
 def add_router_health_checks_arguments(parser):
     """
@@ -681,13 +705,14 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.13'
+    __version__ = '1.0.14'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
     add_install_arguments(parser)
     add_router_identity_arguments(parser)
     add_router_ctrl_arguments(parser)
+    add_router_proxy_arguments(parser)
     add_router_health_checks_arguments(parser)
     add_router_metrics_arguments(parser)
     add_router_edge_arguments(parser)
@@ -777,6 +802,7 @@ def enroll_ziti(jwt_string, install_dir):
     This function should be updated once Ziti has fix the exit codes.
     """
     logging.info("Starting Router Enrollment")
+    current_env = os.environ.copy()
     # write jwt file
     logging.debug("Attempting to write jwt file to disk")
 
@@ -802,7 +828,8 @@ def enroll_ziti(jwt_string, install_dir):
         subprocess.run(registration_command,
                        capture_output=True,
                        text=True,
-                       check=True)
+                       check=True,
+                       env=current_env)
     except subprocess.CalledProcessError as error:
         if "registration complete" in error.stderr:
             logging.info("Successfully enrolled Ziti")
@@ -1280,6 +1307,19 @@ def set_ctrl(args, controller_info):
     if controller_info:
         return {'endpoint': f"tls:{controller_info['hostname']}:{controller_info['fabric_port']}"}
     return {'endpoint': args.controller}
+
+def set_proxy(args):
+    """
+    Set the 'proxy' fields in the template_vars dictionary.
+
+    :param args: Parsed command line arguments.
+    :return: A list containing the 'proxy' field values.    
+    """
+    return {
+        'proxy_type': args.proxyType,
+        'address': args.proxyAddress,
+        'port': args.proxyPort
+    }
 
 def set_link_dialers(args):
     """
@@ -1820,6 +1860,8 @@ def create_template(args, controller_info):
 
     template_vars['identity'] = set_identity(args)
     template_vars['ctrl'] = set_ctrl(args, controller_info)
+    if args.proxyAddress:
+        template_vars['proxy'] = set_proxy(args)
     template_vars['link_dialers'] = set_link_dialers(args)
     template_vars['link_listeners'] = set_link_listeners(args)
     if args.disableHealthChecks:

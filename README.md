@@ -70,6 +70,11 @@ This Python script automates the process of downloading, configuring and enrolli
 - `--controllerMgmtPort`: Controller Edge Port
 - `--controllerFabricPort`: Controller Fabric Port
 
+### Proxy options
+
+- `--proxyType`: Proxy type, currently supported is "http" (Default: `http`)
+- `--proxyAddress`: The Address of the proxy (Default: `None`)
+- `--proxyPort`: The port of the proxy (Default: `3128`)
 ### HealthCheck Options
 
 - `--disableHealthChecks`: Disable HealthChecks portion of router config

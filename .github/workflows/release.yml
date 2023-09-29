@@ -36,22 +36,13 @@ jobs:
       run: cd dist; tar -zcvf ziti_router_auto_enroll.tar.gz ziti_router_auto_enroll
 
     - name: release
-      uses: actions/create-release@v1
+      uses: ncipollo/release-action@v1
       id: release
       with:
         draft: false
         prerelease: false
-        release_name: v${{ env.version }}
-        tag_name: v${{ env.version }}
+        tag: v${{ env.version }}
+        artifacts: dist/ziti_router_auto_enroll.tar.gz
+        artifactContentType: application/gzip
       env:
         GITHUB_TOKEN: ${{ github.token }}
-
-    - name: Upload ziti_router_auto_enroll
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      with:
-        upload_url: ${{ steps.release.outputs.upload_url }}
-        asset_path: dist/ziti_router_auto_enroll.tar.gz
-        asset_name: ziti_router_auto_enroll.tar.gz
-        asset_content_type: application/gzip
