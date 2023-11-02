@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-##[1.0.14] = 2023-09-28
+## [1.0.15] - 2023-11-02
+
+### Added
+
+- Added cleanup of previous binaries to fix re-enrollment issues to higher network versions.
+
+## [1.0.14] - 2023-09-28
 
 ### Added
 

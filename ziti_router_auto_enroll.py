@@ -630,6 +630,26 @@ def check_parameters_file(args, parser):
                 logging.warning("Overriding parameter file value for %s,"
                                 " with value set via cli", arg)
 
+def cleanup_previous_versions():
+    """
+    Removes previous ziti binaries that are present in the system
+    """
+    files_to_remove = [
+        "/opt/netfoundry/ziti/ziti-router/ziti-router",
+        "/opt/netfoundry/ziti/ziti"
+    ]
+
+    logging.info("Removing previous binaries")
+
+    for binary_file in files_to_remove:
+        if os.path.isfile(binary_file):
+            try:
+                logging.debug("Removing file: %s", binary_file)
+                os.remove(binary_file)
+            except OSError:
+                logging.error("Unable to remove %s", binary_file)
+                sys.exit(1)
+
 def create_file(name, path, content="", permissions=0o644):
     """
     Create a file with the given name, path, content, and permissions.
@@ -705,7 +725,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.14'
+    __version__ = '1.0.15'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
@@ -823,6 +843,9 @@ def enroll_ziti(jwt_string, install_dir):
                                 f"{install_dir}/config.yml",
                                 '--jwt',
                                 jwt_path]
+
+    logging.debug("Running command:")
+    logging.debug(registration_command)
 
     try:
         subprocess.run(registration_command,
@@ -1928,6 +1951,7 @@ def main(args):
     else:
         if not args.printConfig:
             manage_systemd_service('ziti-router.service','stop')
+            cleanup_previous_versions()
 
     # print template
     if args.printTemplate:
