@@ -725,7 +725,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.15'
+    __version__ = '1.0.16'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
@@ -1224,7 +1224,7 @@ def install_ziti_binaries(file_to_extract, install_dir):
     try:
         logging.debug("Attempting to create diretory: %s", f'{install_dir}/certs')
         if not os.path.isdir(f'{install_dir}/certs'):
-            os.makedirs(f'{install_dir}/certs', exist_ok=True)
+            os.makedirs(f'{install_dir}/certs', exist_ok=True, mode=0o755)
             logging.debug("Successfully created directory")
     except OSError:
         logging.error("Unable to create install dir")
