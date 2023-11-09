@@ -1126,6 +1126,7 @@ def handle_resolved_dns(args):
     """
     if not os.path.exists("/usr/lib/systemd/resolved.conf.d"):
         try:
+            os.umask(0o022)
             os.makedirs("/usr/lib/systemd/resolved.conf.d")
         except OSError:
             logging.error("Unable to create resolve directories")
@@ -1224,7 +1225,8 @@ def install_ziti_binaries(file_to_extract, install_dir):
     try:
         logging.debug("Attempting to create diretory: %s", f'{install_dir}/certs')
         if not os.path.isdir(f'{install_dir}/certs'):
-            os.makedirs(f'{install_dir}/certs', exist_ok=True, mode=0o755)
+            os.umask(0o022)
+            os.makedirs(f'{install_dir}/certs', exist_ok=True)
             logging.debug("Successfully created directory")
     except OSError:
         logging.error("Unable to create install dir")
