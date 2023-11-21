@@ -143,7 +143,7 @@ This Python script automates the process of downloading, configuring and enrolli
     - LookupApiSessionTimeout(optional): How long to wait before timing out when looking up api-sessions after client connect. Default 5 seconds.
       - Examples: 
         - --edgeListeners 'tls:0.0.0.0:443' 'myhost:443' '1000' '16' '1000' '5'
-        - --edgeListeners 'ws:0.0.0.0:443' 'myhost:7001'
+        - --edgeListeners 'wss:0.0.0.0:443' 'myhost:7001'
 
 - `--proxyListeners`: Proxy Binding Listener (Default: None)
     - Format: 'ADDRESS' 'SERVICE'
