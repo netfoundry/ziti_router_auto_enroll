@@ -725,7 +725,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.16'
+    __version__ = '1.0.17'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
@@ -1058,7 +1058,7 @@ def get_ziti_controller_version(controller_url):
     """
     try:
         logging.info("Version not specified, going to check with controller")
-        endpoint_url = f"{controller_url}/edge/v1/version"
+        endpoint_url = f"{controller_url}/edge/client/v1/version"
         logging.debug("Attempting to access %s", endpoint_url)
 
         urllib3.disable_warnings()
