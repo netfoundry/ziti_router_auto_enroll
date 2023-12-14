@@ -357,14 +357,10 @@ def add_router_metrics_arguments(parser):
     :param parser: The argparse.ArgumentParser instance to add the arguments to.
     """
     router_metrics_group = parser.add_argument_group('Metrics Options')
-    router_metrics_group.add_argument('--disableMetrics',
-                                      action='store_false',
-                                      help='Disable the Metrics',
-                                      default=True)
-    router_metrics_group.add_argument('--reportInterval',type=int, default=15,
+    router_metrics_group.add_argument('--reportInterval',type=int,
                                       help='Reporting Interval - '
-                                           'Default 15')
-    router_metrics_group.add_argument('--messageQueueSize',type=int, default=10,
+                                           'Default 60')
+    router_metrics_group.add_argument('--messageQueueSize',type=int,
                                       help='Message Queue Size - '
                                            'Default 10')
 
@@ -725,7 +721,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.17'
+    __version__ = '1.0.18'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
@@ -1338,7 +1334,7 @@ def set_proxy(args):
     Set the 'proxy' fields in the template_vars dictionary.
 
     :param args: Parsed command line arguments.
-    :return: A list containing the 'proxy' field values.    
+    :return: A list containing the 'proxy' field values.
     """
     return {
         'proxy_type': args.proxyType,
@@ -1429,12 +1425,19 @@ def set_metrics(args):
     :param args: Parsed command line arguments.
     :return: A dictionary containing the 'metrics' field values, or None if not applicable.
     """
-    if args.reportInterval or args.messageQueueSize:
-        return {
-            'reportInterval': f"{args.reportInterval}s",
-            'messageQueueSize': args.messageQueueSize
+    if args.reportInterval:
+        report_interval = args.reportInterval
+    else:
+        report_interval = 60
+    if args.messageQueueSize:
+        message_queue_size = args.messageQueueSize
+    else:
+        message_queue_size = 10
+
+    return {
+            'reportInterval': f"{report_interval}s",
+            'messageQueueSize': message_queue_size
         }
-    return None
 
 def set_edge(args):
     """
@@ -1732,7 +1735,7 @@ def process_jwt(args, parser):
           args.adminUser and
           args.adminPassword and
           args.routerName):
-        controller_url = (f"https://{args.controller}:{args.controllerMgmtPort}")
+        controller_url = f"https://{args.controller}:{args.controllerMgmtPort}"
         session_token = get_session_token(args.adminUser,
                                           args.adminPassword,
                                           controller_url)
@@ -1891,7 +1894,7 @@ def create_template(args, controller_info):
     template_vars['link_listeners'] = set_link_listeners(args)
     if args.disableHealthChecks:
         template_vars['healthChecks'] = set_health_checks(args)
-    if args.disableMetrics:
+    if args.reportInterval or args.messageQueueSize:
         template_vars['metrics'] = set_metrics(args)
     if args.disableEdge:
         template_vars['edge'] = set_edge(args)
