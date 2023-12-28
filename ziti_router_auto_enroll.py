@@ -263,7 +263,6 @@ def add_install_arguments(parser):
                                      'Default https://github.com/openziti/ziti/releases/latest/')
     install_config.add_argument('--skipSystemd',
                                 action='store_true',
-                                type=bool,
                                 help='Skip systemd installation',
                                 default=False)
 
