@@ -490,6 +490,10 @@ def add_router_listener_arguments(parser):
                                             'with the {default_gw_adapter} as the local resolver '
                                             'and LANIf',
                                        default=False)
+    router_listener_group.add_argument('--skipDNS',
+                                       action='store_true',
+                                       help='Skip DNS configuration',
+                                       default=False)
 
 def add_router_web_arguments(parser):
     """
@@ -1941,8 +1945,6 @@ def main(args):
     if args.parametersFile:
         check_parameters_file(args, parser)
 
-
-
     # iptables check if tunneler
     if args.tunnelListener or args.autoTunnelListener:
         check_iptables(args)
@@ -1992,7 +1994,8 @@ def main(args):
 
     # set up local dns for tunnel mode
     if args.tunnelListener or args.autoTunnelListener:
-        handle_dns(args)
+        if not args.skipDNS:
+            handle_dns(args)
 
     # start ziti
     manage_systemd_service('ziti-router.service', 'start')
