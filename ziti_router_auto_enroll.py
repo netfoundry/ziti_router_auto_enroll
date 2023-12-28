@@ -261,6 +261,11 @@ def add_install_arguments(parser):
     install_config.add_argument('--downloadUrl', type=str,
                                 help='Bundle download url - '
                                      'Default https://github.com/openziti/ziti/releases/latest/')
+    install_config.add_argument('--skipSystemd',
+                                action='store_true',
+                                type=bool,
+                                help='Skip systemd installation',
+                                default=False)
 
 def add_router_identity_arguments(parser):
     """
@@ -1144,8 +1149,9 @@ def handle_resolved_dns(args):
         logging.error("Unable to write dns configuration")
         sys.exit(1)
     logging.debug("Restarting network service to apply dns changes")
-    manage_systemd_service('systemd-networkd', 'restart')
-    manage_systemd_service('systemd-resolved', 'restart')
+    if not args.skipSystemd:
+        manage_systemd_service('systemd-networkd', 'restart')
+        manage_systemd_service('systemd-resolved', 'restart')
 
 def handle_systemd_setup(install_version, install_dir):
     """
@@ -1179,7 +1185,8 @@ def handle_systemd_setup(install_version, install_dir):
 def handle_ziti_install(controller_info,
                         download_url=None,
                         install_version=None,
-                        install_dir=None):
+                        install_dir=None,
+                        skip_systemd=False):
     """
     Handle the download and installation of Ziti binaries.
 
@@ -1211,7 +1218,8 @@ def handle_ziti_install(controller_info,
         download_uri = download_url
     downloaded_file = download_file(download_uri)
     install_ziti_binaries(downloaded_file, install_dir)
-    handle_systemd_setup(install_version, install_dir)
+    if not skip_systemd:
+        handle_systemd_setup(install_version, install_dir)
 
 def install_ziti_binaries(file_to_extract, install_dir):
     """
@@ -1957,7 +1965,8 @@ def main(args):
             sys.exit(1)
     else:
         if not args.printConfig:
-            manage_systemd_service('ziti-router.service','stop')
+            if not args.skipSystemd:
+                manage_systemd_service('ziti-router.service','stop')
             cleanup_previous_versions()
 
     # print template
@@ -1983,7 +1992,8 @@ def main(args):
     handle_ziti_install(controller_info,
                         args.downloadUrl,
                         args.installVersion,
-                        args.installDir)
+                        args.installDir,
+                        args.skipSystemd)
 
     # write config
     logging.info("Creating config file")
@@ -1998,8 +2008,9 @@ def main(args):
             handle_dns(args)
 
     # start ziti
-    manage_systemd_service('ziti-router.service', 'start')
-    manage_systemd_service('ziti-router.service', 'enable')
+    if not args.skipSystemd:
+        manage_systemd_service('ziti-router.service', 'start')
+        manage_systemd_service('ziti-router.service', 'enable')
 
 # main
 if __name__ == '__main__':
