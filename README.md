@@ -88,7 +88,6 @@ This Python script automates the process of downloading, configuring and enrolli
 
 ### Metrics Options
 
-- `--disableMetrics`: Disable Metrics portion of router config
 - `--reportInterval`: Reporting Interval (Default: 15)
 - `--messageQueueSize`: Message Queue Size (Default: 10)
 
