@@ -33,6 +33,10 @@ identity:
   ca: {{ identity.ca }}
 ctrl:
   endpoint: {{ ctrl.endpoint }}
+{%- if ha %}
+ha:
+  enabled: true
+{%- endif %}
 {%- if proxy %}
 proxy:
   type: {{ proxy.proxy_type }}
@@ -533,6 +537,17 @@ def add_create_router_arguments(parser):
     create_router_group.add_argument('--routerName',type=str,
                                      help='Router name created in controller')
 
+def add_router_ha_arguments(parser):
+    """
+    Add ha option argument to the parser.
+
+    :param parser: The argparse.ArgumentParser instance to add the arguments to.
+    """
+    router_ha_group = parser.add_argument_group("HA")
+    router_ha_group.add_argument('--ha',
+                                 action='store_true',
+                                 help="Enable ha flag")
+
 def check_root_permissions():
     """
     Check to see if this is running as root privileges & exit if not.
@@ -729,7 +744,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.19'
+    __version__ = '1.0.20'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
@@ -744,6 +759,7 @@ def create_parser():
     add_router_fabric_link_arguments(parser)
     add_router_listener_arguments(parser)
     add_router_web_arguments(parser)
+    add_router_ha_arguments(parser)
     add_create_router_arguments(parser)
 
     return parser
@@ -1916,6 +1932,8 @@ def create_template(args, controller_info):
         template_vars['listeners'] = set_listeners(args)
     if args.disableHealthChecks:
         template_vars['webs'] = set_webs(args)
+    if args.ha:
+        template_vars['ha'] = True
 
     template = Template(CONFIG_TEMPLATE_STRING)
     filled_out_template = template.render(template_vars)
