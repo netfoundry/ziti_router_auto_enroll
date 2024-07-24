@@ -169,6 +169,9 @@ This Python script automates the process of downloading, configuring and enrolli
     - Binding(required): Specifies an API to bind to this webListener. Built-in APIs are
       - Example: --webs 'health-check' '0.0.0.0:8081' '0.0.0.0:8081' 'health-checks'
 
+### HA Options
+- `--ha`: Enable ha flag to True (Default: False)
+
 ## Router Creation Options
 
 Create a new router on the controller before enrollment:

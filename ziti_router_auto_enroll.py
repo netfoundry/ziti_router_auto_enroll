@@ -33,6 +33,10 @@ identity:
   ca: {{ identity.ca }}
 ctrl:
   endpoint: {{ ctrl.endpoint }}
+{%- if ha %}
+ha:
+  enabled: true
+{%- endif %}
 {%- if proxy %}
 proxy:
   type: {{ proxy.proxy_type }}
@@ -533,6 +537,17 @@ def add_create_router_arguments(parser):
     create_router_group.add_argument('--routerName',type=str,
                                      help='Router name created in controller')
 
+def add_router_ha_arguments(parser):
+    """
+    Add ha option argument to the parser.
+
+    :param parser: The argparse.ArgumentParser instance to add the arguments to.
+    """
+    router_ha_group = parser.add_argument_group("HA")
+    router_ha_group.add_argument('--ha',
+                                 action='store_true',
+                                 help="Enable ha flag")
+
 def check_root_permissions():
     """
     Check to see if this is running as root privileges & exit if not.
@@ -634,24 +649,28 @@ def check_parameters_file(args, parser):
                 logging.warning("Overriding parameter file value for %s,"
                                 " with value set via cli", arg)
 
-def cleanup_previous_versions():
+def cleanup_previous_versions(args):
     """
     Removes previous ziti binaries that are present in the system
+
+    :args:args (argparse.Namespace): A Namespace object containing the parsed arguments.
     """
     files_to_remove = [
-        "/opt/netfoundry/ziti/ziti-router/ziti-router",
-        "/opt/netfoundry/ziti/ziti"
+        "/ziti-router",
+        "/ziti",
+        "/endpoints"
     ]
 
     logging.info("Removing previous binaries")
 
-    for binary_file in files_to_remove:
-        if os.path.isfile(binary_file):
+    for file in files_to_remove:
+        file_to_remove = args.installDir + file
+        if os.path.isfile(file_to_remove):
             try:
-                logging.debug("Removing file: %s", binary_file)
-                os.remove(binary_file)
+                logging.debug("Removing file: %s", file_to_remove)
+                os.remove(file_to_remove)
             except OSError:
-                logging.error("Unable to remove %s", binary_file)
+                logging.error("Unable to remove %s", file_to_remove)
                 sys.exit(1)
 
 def create_file(name, path, content="", permissions=0o644):
@@ -729,7 +748,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.19'
+    __version__ = '1.0.20'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
@@ -744,6 +763,7 @@ def create_parser():
     add_router_fabric_link_arguments(parser)
     add_router_listener_arguments(parser)
     add_router_web_arguments(parser)
+    add_router_ha_arguments(parser)
     add_create_router_arguments(parser)
 
     return parser
@@ -1916,6 +1936,8 @@ def create_template(args, controller_info):
         template_vars['listeners'] = set_listeners(args)
     if args.disableHealthChecks:
         template_vars['webs'] = set_webs(args)
+    if args.ha:
+        template_vars['ha'] = True
 
     template = Template(CONFIG_TEMPLATE_STRING)
     filled_out_template = template.render(template_vars)
@@ -1966,7 +1988,7 @@ def main(args):
         if not args.printConfig:
             if not args.skipSystemd:
                 manage_systemd_service('ziti-router.service','stop')
-            cleanup_previous_versions()
+            cleanup_previous_versions(args)
 
     # print template
     if args.printTemplate:
