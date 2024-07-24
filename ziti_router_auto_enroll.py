@@ -649,24 +649,28 @@ def check_parameters_file(args, parser):
                 logging.warning("Overriding parameter file value for %s,"
                                 " with value set via cli", arg)
 
-def cleanup_previous_versions():
+def cleanup_previous_versions(args):
     """
     Removes previous ziti binaries that are present in the system
+
+    :args:args (argparse.Namespace): A Namespace object containing the parsed arguments.
     """
     files_to_remove = [
-        "/opt/netfoundry/ziti/ziti-router/ziti-router",
-        "/opt/netfoundry/ziti/ziti"
+        "/ziti-router",
+        "/ziti",
+        "/endpoints"
     ]
 
     logging.info("Removing previous binaries")
 
-    for binary_file in files_to_remove:
-        if os.path.isfile(binary_file):
+    for file in files_to_remove:
+        file_to_remove = args.installDir + file
+        if os.path.isfile(file_to_remove):
             try:
-                logging.debug("Removing file: %s", binary_file)
-                os.remove(binary_file)
+                logging.debug("Removing file: %s", file_to_remove)
+                os.remove(file_to_remove)
             except OSError:
-                logging.error("Unable to remove %s", binary_file)
+                logging.error("Unable to remove %s", file_to_remove)
                 sys.exit(1)
 
 def create_file(name, path, content="", permissions=0o644):
@@ -1984,7 +1988,7 @@ def main(args):
         if not args.printConfig:
             if not args.skipSystemd:
                 manage_systemd_service('ziti-router.service','stop')
-            cleanup_previous_versions()
+            cleanup_previous_versions(args)
 
     # print template
     if args.printTemplate:

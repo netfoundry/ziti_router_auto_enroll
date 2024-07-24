@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file. The format 
 ### Added
 
 - Add ha argument to enable ha flag in configuration
+- Add ha cleanup
 
 ## [1.0.19] - 2023-12-28
 
