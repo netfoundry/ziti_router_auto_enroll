@@ -748,7 +748,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.20'
+    __version__ = '1.0.21'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
@@ -1624,8 +1624,23 @@ def set_webs(args):
             web_values['apis'] = web_apis_values
             webs.append(web_values)
     else:
+        if args.assumePublic:
+            public_address = get_public_address()
+            hostname = get_hostname_from_ip(public_address, args)
+            if hostname is None:
+                advertise_value = public_address
+            else:
+                advertise_value = hostname
+        else:
+            private_address = get_private_address()
+            hostname = get_hostname_from_ip(private_address, args)
+            if hostname is None:
+                advertise_value = private_address
+            else:
+                advertise_value = hostname
+
         web_values = {'name': 'health-check'}
-        web_bindpoints_values = {'interface':'0.0.0.0:8081','address': '0.0.0.0:8081'}
+        web_bindpoints_values = {'interface':'0.0.0.0:8081','address': f'{advertise_value}:8081'}
         web_values['bindpoints'] = web_bindpoints_values
         web_apis_values = {'binding': 'health-checks'}
         web_values['apis'] = web_apis_values
