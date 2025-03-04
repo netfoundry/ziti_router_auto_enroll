@@ -10,20 +10,17 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        python-version: ["3.10"]
+    runs-on: ubuntu-latest  # this is just the host, but the job will run in the container
+    container: ubuntu:20.04
     steps:
     - name: Check out code into the directory
       uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
+        # Install required dependencies inside the container
+        apt-get update
+        apt-get install -y python3 python3-pip python3-dev wget build-essential       
+        python3 -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Use pyinstall to create ziti_router_auto_enroll distribution binary
       run: pyinstaller -F ziti_router_auto_enroll.py      
