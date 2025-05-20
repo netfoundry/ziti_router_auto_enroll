@@ -755,7 +755,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.23'
+    __version__ = '1.0.24'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
@@ -2047,13 +2047,12 @@ def main(args):
     # write config
     logging.info("Creating config file")
     create_file(name='config.yml', path=args.installDir, content=config)
-
     # do enrollment
     enroll_ziti(jwt_string, args.installDir)
 
-    # set up local dns for tunnel mode
+    # set up local dns for tunnel mode, if not skipping or host mode
     if args.tunnelListener or args.autoTunnelListener:
-        if not args.skipDNS:
+        if not args.skipDNS and ('host' not in args.tunnelListener):
             handle_dns(args)
 
     # start ziti
