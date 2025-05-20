@@ -269,6 +269,10 @@ def add_install_arguments(parser):
                                 action='store_true',
                                 help='Skip systemd installation',
                                 default=False)
+    install_config.add_argument('--skipRootCheck',
+                                action='store_true',
+                                help='Skip root check',
+                                default=False)
 
 def add_router_identity_arguments(parser):
     """
@@ -548,11 +552,14 @@ def add_router_ha_arguments(parser):
                                  action='store_true',
                                  help="Enable ha flag")
 
-def check_root_permissions():
+def check_root_permissions(skip_check):
     """
     Check to see if this is running as root privileges & exit if not.
 
     """
+    if skip_check:
+        logging.debug("Skipping root check")
+        return
     if os.geteuid() >= 1:
         print("\033[0;31mERROR:\033[0m This script must be run with elevated privileges, "
                       "please use 'sudo -E' or run as root")
@@ -748,7 +755,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.22'
+    __version__ = '1.0.23'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
@@ -1976,7 +1983,7 @@ def main(args):
     args = parser.parse_args(args)
 
     # root check
-    check_root_permissions()
+    check_root_permissions(args.skipRootCheck)
 
     if args.logFile:
         log_file = args.logFile
