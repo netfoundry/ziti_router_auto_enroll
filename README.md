@@ -55,6 +55,7 @@ This Python script automates the process of downloading, configuring and enrolli
 - `--installDir`: Installation directory for Openziti (Default: `/opt/openziti/ziti-router`)
 - `--installVersion`: Install a specific version (Default is to match Controller)
 - `--downloadUrl`: Bundle download URL (Default: `https://github.com/openziti/ziti/releases/latest/`)
+- `--skipRootCheck`: Skip checking for root user (Default False)
 
 ## Configuration Options
 ### Router Identity Paths
