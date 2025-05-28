@@ -755,7 +755,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.24'
+    __version__ = '1.0.25'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
@@ -2052,7 +2052,7 @@ def main(args):
 
     # set up local dns for tunnel mode, if not skipping or host mode
     if args.tunnelListener or args.autoTunnelListener:
-        if not args.skipDNS and ('host' not in args.tunnelListener):
+        if not args.skipDNS and (not args.tunnelListener or 'host' not in args.tunnelListener):
             handle_dns(args)
 
     # start ziti
