@@ -305,8 +305,8 @@ def add_router_ctrl_arguments(parser):
                                      help='Hostname or IP of Openziti controller')
     router_ctrl_config_group.add_argument('--controllerFabricPort',type=int,
                                      help='Controller Fabric Port'
-                                          'Default 80',
-                                     default=80)
+                                          'Default 443',
+                                     default=443)
     router_ctrl_config_group.add_argument('--controllerMgmtPort',type=int,
                                      help='Controller Management Port'
                                           'Default 443',
@@ -755,7 +755,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.25'
+    __version__ = '1.0.26'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
@@ -847,7 +847,7 @@ def download_file(download_url):
         sys.exit(1)
     return file_name
 
-def enroll_ziti(jwt_string, install_dir):
+def enroll_ziti(jwt_string, install_dir, loglevel):
     """
     Register the ziti edge router
     This function should be updated once Ziti has fix the exit codes.
@@ -874,6 +874,9 @@ def enroll_ziti(jwt_string, install_dir):
                                 f"{install_dir}/config.yml",
                                 '--jwt',
                                 jwt_path]
+
+    if loglevel == 'DEBUG':
+        registration_command.append('-v')
 
     logging.debug("Running command:")
     logging.debug(registration_command)
@@ -1432,8 +1435,8 @@ def set_link_listeners(args):
         else:
             advertise_value = hostname
         link_listener_values = {'binding': 'transport',
-                                'bind': 'tls:0.0.0.0:80',
-                                'advertise': f"tls:{advertise_value}:80"}
+                                'bind': 'tls:0.0.0.0:443',
+                                'advertise': f"tls:{advertise_value}:443"}
         link_listener_options_value = {'outqueuesize': '16'}
         link_listener_values['options'] = link_listener_options_value
         link_listeners.append(link_listener_values)
@@ -2048,7 +2051,7 @@ def main(args):
     logging.info("Creating config file")
     create_file(name='config.yml', path=args.installDir, content=config)
     # do enrollment
-    enroll_ziti(jwt_string, args.installDir)
+    enroll_ziti(jwt_string, args.installDir, args.logLevel)
 
     # set up local dns for tunnel mode, if not skipping or host mode
     if args.tunnelListener or args.autoTunnelListener:
