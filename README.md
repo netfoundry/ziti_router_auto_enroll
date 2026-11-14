@@ -7,9 +7,9 @@ This Python script automates the process of downloading, configuring and enrolli
 ## Requirements
 
 ### Running compiled binary
-- Ubuntu 20.04 or higher
+- Ubuntu 22.04 or higher
 ### Running with python
-- Ubuntu 20.04 or higher
+- Ubuntu 22.04 or higher
 - Python 3.6 or higher
 - Install requirements: `pip install -r requirements.txt`
 

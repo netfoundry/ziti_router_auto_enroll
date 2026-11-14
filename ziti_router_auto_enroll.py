@@ -755,7 +755,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.26'
+    __version__ = '1.0.27'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
@@ -1125,7 +1125,7 @@ def handle_dns(args):
     """
     Configure DNS settings for Ziti based on the current operating system.
 
-    This function currently supports Ubuntu, Centos, Redhat.
+    This function currently supports Ubuntu (22.04, 24.04, 26.04) and Debian 12.
     It delegates the configuration to a dedicated function for
     the specific operating system.
 
@@ -1139,7 +1139,7 @@ def handle_dns(args):
 
     if os_name == 'ubuntu':
         logging.info("Starting Ubuntu DNS setup")
-        if os_version in ['20.04','22.04','24.04']:
+        if os_version in ['22.04','24.04','26.04']:
             handle_resolved_dns(args)
         else:
             logging.error("Unsupported Ubuntu version %s", os_version)
