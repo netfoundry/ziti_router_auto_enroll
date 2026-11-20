@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.28] - 2026-11-19
+
+### Changed
+
+- Fixed systemctl and other child process failures on Ubuntu 26.04 caused by bundled OpenSSL libraries leaking via LD_LIBRARY_PATH
+- Pinned Python dependency versions
+
 ## [1.0.27] - 2026-11-13
 
 ### Changed

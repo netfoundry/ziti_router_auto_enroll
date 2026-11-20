@@ -755,7 +755,7 @@ def create_parser():
 
     :return: A Namespace containing arguments
     """
-    __version__ = '1.0.27'
+    __version__ = '1.0.28'
     parser = argparse.ArgumentParser()
 
     add_general_arguments(parser, __version__)
@@ -1975,10 +1975,27 @@ def create_template(args, controller_info):
 
     return filled_out_template
 
+def restore_library_path():
+    """
+    PyInstaller points LD_LIBRARY_PATH at its bundled libraries (e.g. libcrypto.so.3).
+    Restore the original value so child processes such as systemctl use the host's
+    libraries instead of ours.
+    """
+    if not getattr(sys, 'frozen', False):
+        return
+    orig = os.environ.get('LD_LIBRARY_PATH_ORIG')
+    if orig is not None:
+        os.environ['LD_LIBRARY_PATH'] = orig
+    else:
+        os.environ.pop('LD_LIBRARY_PATH', None)
+
 def main(args):
     """
     Main logic
     """
+    # restore host library path for child processes (PyInstaller binary)
+    restore_library_path()
+
     # create parser
     parser = create_parser()
 
